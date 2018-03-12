@@ -109,6 +109,7 @@ class ShortestForwarding(app_manager.RyuApp):
             chosen_path, flow_paths = self.milp_routing(chosen_flow)
             print 'chosen path:', chosen_path
             print 'flow path:', flow_paths
+            self.config_priority += 1
             for flow, value in chosen_path.items():
                 flow_info = self.lookup[flow]
                 path = flow_paths[flow][int(value)]
@@ -120,7 +121,7 @@ class ShortestForwarding(app_manager.RyuApp):
                                   self.awareness.link_to_port,
                                   self.awareness.access_table, path,
                                   flow_info, None, prio=self.config_priority)
-            self.config_priority += 1
+
             # print information
             print 'after ILP model'
             self.monitor.res_bw_show()
@@ -546,6 +547,7 @@ class ShortestForwarding(app_manager.RyuApp):
         flows = nPath.keys()
         print 'candidate flows:', flows
         flows, flow_require = max_admittable_flow(res_bw, flows, edge_info, path_number, flow_require)
+        print 'admittable flow:', flow_require
         path_res, obj = milp_sdn_routing(res_bw, flows, edge_info, path_number, flow_require)
         print 'the minimize maximize link utilization:', obj
         return path_res, nPath
