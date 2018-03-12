@@ -108,10 +108,6 @@ def max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require):
 
         model += total_used_bd[edge] <= res_bw[edge]
 
-    # for flow in flows:
-    #     for i in xrange(path_num):
-    #         model += y[(flow, i)] <= z[flow]
-
     # objection
     model += pulp.lpSum(flow_require[flow] * z[flow] for flow in flows), 'max the admittable flow'
 
@@ -121,6 +117,9 @@ def max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require):
 
     total_amittable = pulp.value(model.objective)
     print "the max admittable flow is {}".format(total_amittable)
+    for v in model.variables():
+        if v.varValue and 'hand' in v.name:
+            print v.name, '=', v.varValue
 
 
 def link_cost(bandwidth):
@@ -260,9 +259,9 @@ if __name__ == '__main__':
     # milp_sdn_routing(res_bw, flows, edge_info, path_num, flow_require):
     res_bw = {(1, 2): 3, (1, 3): 3, (1, 4): 3, (2, 5): 3, (3, 7): 3, (4, 6): 3,
                (5, 7): 3, (6, 7): 3}
-    flows = [('10.0.0.1','10.0.0.4'), ('10.0.0.2','10.0.0.5'), ('10.0.0.3','10.0.0.6')]
+    flows = [('10.0.0.1','10.0.0.4'), ('10.0.0.2', '10.0.0.5'), ('10.0.0.3','10.0.0.6')]
     path_num = 3
-    flow_require = {('10.0.0.1','10.0.0.4'):2,('10.0.0.2','10.0.0.5'):1.5,('10.0.0.3','10.0.0.6'):1.5}
+    flow_require = {('10.0.0.1','10.0.0.4'): 4, ('10.0.0.2', '10.0.0.5'): 1.5, ('10.0.0.3', '10.0.0.6'): 1.5}
     edge_info = {
         (1, 2): {('10.0.0.1', '10.0.0.4'): {0: 1, 1: 0, 2: 0}, ('10.0.0.2', '10.0.0.5'): {0: 1, 1: 0, 2: 0},
                  ('10.0.0.3', '10.0.0.6'): {0: 1, 1: 0, 2: 0}},
