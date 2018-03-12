@@ -82,6 +82,8 @@ def milp_sdn_routing(res_bw, flows, edge_info, path_num, flow_require):
     # print chosen_path
     return chosen_path, total_cost
 
+
+@exeTime
 def max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require):
     '''
         this function is used to calculate the max admittable flow
@@ -92,7 +94,6 @@ def max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require):
     y = pulp.LpVariable.dicts("choose a path", [(flow, path_index) for flow in flows
                                                 for path_index in xrange(path_num)], 0, 1, cat='Binary')
     z = pulp.LpVariable.dicts('hand the flow or not', flows, 0, 1, cat='Binary')
-
 
     # constrains 1
     for flow in flows:
@@ -117,9 +118,15 @@ def max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require):
 
     total_amittable = pulp.value(model.objective)
     print "the max admittable flow is {}".format(total_amittable)
+    new_flow_require = {}
     for v in model.variables():
         if v.varValue and 'hand' in v.name:
             print v.name, '=', v.varValue
+            temp = v.name.split(',')
+            src, dst = temp[0][-9:-1], temp[1][2:-2]
+            new_flow_require[(src, dst)] = flow_require[(src, dst)]
+    return new_flow_require.keys(), new_flow_require
+
 
 
 def link_cost(bandwidth):
@@ -281,8 +288,9 @@ if __name__ == '__main__':
                  ('10.0.0.3', '10.0.0.6'): {0: 0, 1: 0, 2: 1}},
     }
 
-    max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require)
-
+    flow,flow_re = max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require)
+    print flow
+    print flow_re
     # print edge_info[(1,2)][('10.0.0.1','10.0.0.4')][1]
 
     # print int(link_cost(10))

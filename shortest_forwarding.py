@@ -39,7 +39,7 @@ import network_awareness
 import network_monitor
 # import network_delay_detector
 import setting
-from network_reconfigration import milp_sdn_routing
+from network_reconfigration import milp_sdn_routing, max_admittable_flow
 from copy import deepcopy
 
 
@@ -544,7 +544,8 @@ class ShortestForwarding(app_manager.RyuApp):
         edge_info = self.path_to_link_vector(nPath)
         print 'edge_info:', edge_info
         flows = nPath.keys()
-        print 'flows:', flows
+        print 'candidate flows:', flows
+        flows, flow_require = max_admittable_flow(res_bw, flows, edge_info, path_number, flow_require)
         path_res, obj = milp_sdn_routing(res_bw, flows, edge_info, path_number, flow_require)
         print 'the minimize maximize link utilization:', obj
         return path_res, nPath
