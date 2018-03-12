@@ -82,6 +82,46 @@ def milp_sdn_routing(res_bw, flows, edge_info, path_num, flow_require):
     # print chosen_path
     return chosen_path, total_cost
 
+def max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require):
+    '''
+        this function is used to calculate the max admittable flow
+    '''
+    edges = edge_info.keys()
+
+    model = pulp.LpProblem("max admittable flow", pulp.LpMaximize)
+    y = pulp.LpVariable.dicts("choose a path", [(flow, path_index) for flow in flows
+                                                for path_index in xrange(path_num)], 0, 1, cat='Binary')
+    z = pulp.LpVariable.dicts('hand the flow or not', flows, 0, 1, cat='Binary')
+
+
+    # constrains 1
+    for flow in flows:
+        model += pulp.lpSum(y[(flow, i)] for i in xrange(path_num)) == z[flow]
+
+    # constrains 2
+    total_used_bd = {}
+    for edge in edges:
+        total_used_bd[edge] = 0
+        for flow in flows:
+            total_used_bd[edge] += sum(flow_require[flow] * y[(flow, i)] *
+                                       edge_info[edge][flow][i] for i in xrange(path_num))
+
+        model += total_used_bd[edge] <= res_bw[edge]
+
+    # for flow in flows:
+    #     for i in xrange(path_num):
+    #         model += y[(flow, i)] <= z[flow]
+
+    # objection
+    model += pulp.lpSum(flow_require[flow] * z[flow] for flow in flows), 'max the admittable flow'
+
+    model.solve()
+    status = pulp.LpStatus[model.status]
+    print status
+
+    total_amittable = pulp.value(model.objective)
+    print "the max admittable flow is {}".format(total_amittable)
+
 
 def link_cost(bandwidth):
     '''
@@ -242,7 +282,7 @@ if __name__ == '__main__':
                  ('10.0.0.3', '10.0.0.6'): {0: 0, 1: 0, 2: 1}},
     }
 
-    milp_sdn_routing(res_bw, flows, edge_info, path_num, flow_require)
+    max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require)
 
     # print edge_info[(1,2)][('10.0.0.1','10.0.0.4')][1]
 
