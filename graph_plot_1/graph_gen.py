@@ -78,36 +78,36 @@ def throughtout_plot():
     # plt.tight_layout()  #去掉的话效果会更好点
     plt.show()
 
-def ILP_plot():
+def compar_plot():
 
     x = np.arange(0, 31, 1)
 
-    y1 = all_data.ILP_throughput.y1
+    y1 = all_data.CWSP_throughput.y1
     y2 = all_data.ILP_throughput.y2
     y3 = all_data.ILP_throughput.y3
-    y4 = all_data.ILP_throughput.y4
+    # y4 = all_data.ILP_throughput.y4
 
     plt.figure(figsize=(8, 5))
-    plt.plot(x, y1, 'k', marker='s', label="flow(h1-h5) priority 4", markeredgewidth=1, mec='k',
-             markerfacecolor="none", markersize=10)
+    # plt.plot(x, y1, 'k', marker='s', label="shortest path method", markeredgewidth=1, mec='k',
+    #          markerfacecolor="none", markersize=10)
 
-    plt.plot(x, y2, 'r', marker='s', label="flow(h2-h6) priority 3",
+    plt.plot(x, y2, 'r', marker='s', label="greedy method",
              markersize=10)
 
     plt.plot(x, y3, color='g', marker='h', markersize=10,
-             label="flow(h3-h7) priority 2")
+             label="MILP method")
 
-    plt.plot(x, y4, color='b', marker='o', markersize=10,
-             label="flow(h4-h8) priority 1")
+    plt.plot(x, y1, color='b', marker='o', markersize=10,
+             label="shortest path method")
 
     plt.ylabel('Throughput(Mbps)')
     plt.xlabel('Time(s)')
-    plt.yticks(np.arange(0, 11, 1))
+    plt.yticks(np.arange(0, 8, 1))
     plt.legend(loc='upper left')
     plt.show()
 
 if __name__ == '__main__':
     sender_plot()
     throughtout_plot()
-    # ILP_plot()
+    compar_plot()
 
