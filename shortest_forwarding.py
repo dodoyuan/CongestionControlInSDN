@@ -542,7 +542,6 @@ class ShortestForwarding(app_manager.RyuApp):
                     nPath[flow].append(nPath[flow][0])
                 if len(nPath) > path_number:
                     nPath[flow].pop()
-        print 'location at'
         edge_info = self.path_to_link_vector(nPath)
         print 'edge_info:', edge_info
         flows = nPath.keys()
