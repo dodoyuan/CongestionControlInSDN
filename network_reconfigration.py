@@ -153,7 +153,7 @@ if __name__ == '__main__':
                  ('10.0.0.3', '10.0.0.6'): {0: 0, 1: 0, 2: 1}},
     }
 
-    flow,flow_re = max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require)
+    flow, flow_re = max_admittable_flow(res_bw, flows, edge_info, path_num, flow_require)
     print flow
     print flow_re
     # print edge_info[(1,2)][('10.0.0.1','10.0.0.4')][1]
