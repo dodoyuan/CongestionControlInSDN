@@ -51,11 +51,11 @@ def get_bandwidth(edge):
     if edge == (4, 6) or edge == (6, 4):
         return 5.5
     if edge == (1, 5) or edge == (5, 1):
-        return 3.7
+        return 5.9
     if edge == (5, 6) or edge == (6, 5):
-        return 4.2
+        return 5.8
     if edge == (6, 7) or edge == (7, 6):
-        return 3.6
+        return 5.5
     if edge == (1, 8) or edge == (8, 1):
         return 5.1
     if edge == (8, 9) or edge == (9, 8):
@@ -63,5 +63,5 @@ def get_bandwidth(edge):
     if edge == (9, 6) or edge == (6, 9):
         return 4.1
     if edge == (2, 5) or edge == (5, 2):
-        return 3.5
+        return 5.0
 
