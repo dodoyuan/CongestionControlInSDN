@@ -57,16 +57,16 @@ def throughtout_plot():
     rects1 = plt.bar(index + 0.1, throughput_sp, bar_width,
                      alpha=opacity,
                      color='grey', hatch='//',
-                     label='packet loss rate with RR')
+                     label='shortest path')
 
     rects2 = plt.bar(index + 0.1 + bar_width, throughput_greedy, bar_width,
                      alpha=opacity,
                      color='lightgrey', hatch='\\',
-                     label='packet loss rate without RR')
+                     label='greedy method')
     rects2 = plt.bar(index + 0.1 + 2 * bar_width, throughput_ILP, bar_width,
                      alpha=opacity,
                      color='lightgrey', hatch='--',
-                     label='packet loss rate without RR')
+                     label='MILP method')
 
     plt.xlabel('time quantum')
     plt.ylabel('throughput(Mbps)')
