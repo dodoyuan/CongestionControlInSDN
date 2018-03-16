@@ -38,37 +38,44 @@ def sender_plot():
 
     plt.ylabel('Throughput(Mbps)')
     plt.xlabel('Time(s)')
-    plt.yticks(np.arange(0, 6, 1))
+    plt.yticks(np.arange(0, 4, 1))
     plt.legend(loc='upper left')
     plt.show()
 
-def CSWP_plot():
+def throughtout_plot():
 
-    x = np.arange(0, 31, 1)
+    throughput_sp = [2.1, 2.7, 4.1, 5.8]
+    throughput_ILP = [2.1, 2.7, 4.1, 7.4]
+    throughput_greedy = [2.1, 2.7, 4.1, 7.4]
 
-    y1 = all_data.CWSP_throughput.y1
-    # y2 = all_data.CWSP_throughput.y2
-    # y3 = all_data.CWSP_throughput.y3
-    # y4 = all_data.CWSP_throughput.y4
+    n_groups = 4
+    # create plot
+    fig, ax = plt.subplots()
+    index = np.arange(n_groups)
+    bar_width = 0.15
+    opacity = 0.5  # 透明度，0.5时候稍微好点
+    rects1 = plt.bar(index + 0.1, throughput_sp, bar_width,
+                     alpha=opacity,
+                     color='grey', hatch='//',
+                     label='packet loss rate with RR')
 
-    plt.figure(figsize=(8, 5))
-    plt.plot(x, y1, 'k', marker='s', label="shortest path", markeredgewidth=1, mec='k',
-             markerfacecolor="none", markersize=10)
+    rects2 = plt.bar(index + 0.1 + bar_width, throughput_greedy, bar_width,
+                     alpha=opacity,
+                     color='lightgrey', hatch='\\',
+                     label='packet loss rate without RR')
+    rects2 = plt.bar(index + 0.1 + 2 * bar_width, throughput_ILP, bar_width,
+                     alpha=opacity,
+                     color='lightgrey', hatch='--',
+                     label='packet loss rate without RR')
 
-    # plt.plot(x, y2, 'r', marker='s', label="flow(h2-h6) priority 3",
-    #          markersize=10)
-    #
-    # plt.plot(x, y3, color='g', marker='h', markersize=10,
-    #          label="flow(h3-h7) priority 2")
-    #
-    # plt.plot(x, y4, color='b', marker='o', markersize=10,
-    #          label="flow(h4-h8) priority 1")
+    plt.xlabel('time quantum')
+    plt.ylabel('throughput(Mbps)')
+    # plt.title('Scores by person')
+    plt.yticks([0, 2, 4, 6, 8, 10])
+    plt.xticks(index + 2 * bar_width, ('5s-10s', '10s-15s', '15s-20s', '20s-25s'))
+    plt.legend(loc='upper left')  # 没有这个不会显示每个图的label
 
-    plt.ylabel('Throughput(Mbps)')
-    plt.xlabel('Time(s)')
-    plt.yticks(np.arange(0, 8, 1))
-    plt.xticks(np.arange(5, 31, 5))
-    plt.legend(loc='upper left')
+    # plt.tight_layout()  #去掉的话效果会更好点
     plt.show()
 
 def ILP_plot():
@@ -101,6 +108,6 @@ def ILP_plot():
 
 if __name__ == '__main__':
     sender_plot()
-    CSWP_plot()
+    throughtout_plot()
     # ILP_plot()
 
