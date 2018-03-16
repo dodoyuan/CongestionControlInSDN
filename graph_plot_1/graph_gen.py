@@ -67,6 +67,7 @@ def CSWP_plot():
     plt.ylabel('Throughput(Mbps)')
     plt.xlabel('Time(s)')
     plt.yticks(np.arange(0, 11, 1))
+    plt.xticks(np.arange(5, 31, 5))
     plt.legend(loc='upper left')
     plt.show()
 
