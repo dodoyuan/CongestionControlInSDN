@@ -83,8 +83,8 @@ def compar_plot():
     x = np.arange(0, 31, 1)
 
     y1 = all_data.CWSP_throughput.y1
-    y2 = all_data.ILP_throughput.y2
-    y3 = all_data.ILP_throughput.y3
+    y2 = all_data.CWSP_throughput.y2
+    y3 = all_data.CWSP_throughput.y3
     # y4 = all_data.ILP_throughput.y4
 
     plt.figure(figsize=(8, 5))
