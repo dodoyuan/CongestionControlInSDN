@@ -532,7 +532,7 @@ class ShortestForwarding(app_manager.RyuApp):
         path_number = setting.path_number
         shortest_paths = self.awareness.shortest_paths
         for flow, value in chosen_flow.items():
-            path = shortest_paths[value[0][0]][value[0][1]]
+            path = shortest_paths[value[0][0]][value[0][1]][:path_number]
             nPath[flow].extend(path)
 
         # target: len(nPath[flow]) == n
@@ -542,6 +542,7 @@ class ShortestForwarding(app_manager.RyuApp):
                     nPath[flow].append(nPath[flow][0])
                 if len(nPath) > path_number:
                     nPath[flow].pop()
+        print 'location at'
         edge_info = self.path_to_link_vector(nPath)
         print 'edge_info:', edge_info
         flows = nPath.keys()
