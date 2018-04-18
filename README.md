@@ -8,3 +8,13 @@
 
 
 create a application for SDN QoS routing, use the traditional method (shortest path or ECMP) for primary routing, when congestion happened, it can reallocate resource use MILP method.
+
+### usage
+* `cd ryu/app/`
+* `mkdir sdn_routing`
+* copy all the file to the directary.
+* create a topology  `python mntopo2.py`
+* start the application. `ryu-manage shorest_forwarding.py --observe-links`
+* use mininet to test the idea.
+### others
+* any question, email: yuan_bupt@163.com
