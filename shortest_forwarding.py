@@ -41,6 +41,7 @@ import network_monitor
 import setting
 from network_reconfigration import milp_sdn_routing, max_admittable_flow
 from copy import deepcopy
+import NSGA2.nsga2_main
 
 
 class ShortestForwarding(app_manager.RyuApp):
@@ -91,7 +92,7 @@ class ShortestForwarding(app_manager.RyuApp):
             self.awareness.get_shortest_paths(weight=self.weight)
         return True
 
-    def _ilp_process(self, chosen_flow):
+    def _ilp_process(self, chosen_flow, mode):
         '''
             the entry for ilp process
         '''
@@ -106,7 +107,7 @@ class ShortestForwarding(app_manager.RyuApp):
             self.congstion = 0
 
             # allpath, flow_identity, max_priority = self.reconfigration()
-            chosen_path, flow_paths = self.milp_routing(chosen_flow)
+            chosen_path, flow_paths = self.routing_alogrithm(chosen_flow, mode)
             print 'chosen path:', chosen_path
             print 'flow path:', flow_paths
             self.config_priority += 1
@@ -434,7 +435,8 @@ class ShortestForwarding(app_manager.RyuApp):
             if chose_flow != {}:
                 print 'chosen flow:', chose_flow
                 self.monitor.residual_bandwidth(chose_flow.values())  # renew the network res_bw graph
-                self._ilp_process(chose_flow)
+                mode = 'NSGA2'
+                self._ilp_process(chose_flow, mode)
             else:
                 print 'no chosen flow'
 
@@ -516,7 +518,7 @@ class ShortestForwarding(app_manager.RyuApp):
                 self.show_ilp_data()
 
 
-    def milp_routing(self,chosen_flow):
+    def routing_alogrithm(self, chosen_flow, mode = 'MILP'):
         '''
             chosen_flow --->  chose_flow[(ipsrc, ipdst)] = [(src_dp,dst_dp)， path, require_band]
             prepare the information for ILP model
@@ -546,11 +548,15 @@ class ShortestForwarding(app_manager.RyuApp):
         print 'edge_info:', edge_info
         flows = nPath.keys()
         print 'candidate flows:', flows
-        flows, flow_require = max_admittable_flow(res_bw, flows, edge_info, path_number, flow_require)
-        print 'admittable flow:', flow_require
-        path_res, obj = milp_sdn_routing(res_bw, flows, edge_info, path_number, flow_require)
-        print 'the minimize maximize link utilization:', obj
-        return path_res, nPath
+        if mode == 'MILP':
+            flows, flow_require = max_admittable_flow(res_bw, flows, edge_info, path_number, flow_require)
+            print 'admittable flow:', flow_require
+            path_res, obj = milp_sdn_routing(res_bw, flows, edge_info, path_number, flow_require)
+            print 'the minimize maximize link utilization:', obj
+            return path_res, nPath
+        if mode == 'NSGA2':
+
+
 
     def path_to_link_vector(self, npath):
         '''

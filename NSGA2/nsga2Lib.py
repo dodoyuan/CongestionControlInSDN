@@ -107,8 +107,8 @@ class NSGAII:
         '''
         Run NSGA-II.
         '''
-        for s in P:
-            s.evaluate_solution()
+        # for s in P:
+        #     s.evaluate_solution()
 
         Q = []
         # 循环代数，引入了精英策略
