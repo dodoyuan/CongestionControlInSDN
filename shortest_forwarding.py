@@ -41,7 +41,7 @@ import network_monitor
 import setting
 from network_reconfigration import milp_sdn_routing, max_admittable_flow
 from copy import deepcopy
-import NSGA2.nsga2_main
+from NSGA2.NSGA_Network_Model import NetModel
 
 
 class ShortestForwarding(app_manager.RyuApp):
@@ -101,7 +101,7 @@ class ShortestForwarding(app_manager.RyuApp):
         if self.handle_flag:
             self.logger.debug("enter reconfigration")
             # print information
-            print 'before ILP model'
+            print 'before %s model' % mode
             self.monitor.res_bw_show()
             self.handle_flag = 0  # avoid handle repeat request
             self.congstion = 0
@@ -124,7 +124,7 @@ class ShortestForwarding(app_manager.RyuApp):
                                   flow_info, None, prio=self.config_priority)
 
             # print information
-            print 'after ILP model'
+            print 'after  %s model' % mode
             self.monitor.res_bw_show()
 
     def add_drop_flow(self, flow_info, prio):
@@ -551,11 +551,12 @@ class ShortestForwarding(app_manager.RyuApp):
         if mode == 'MILP':
             flows, flow_require = max_admittable_flow(res_bw, flows, edge_info, path_number, flow_require)
             print 'admittable flow:', flow_require
-            path_res, obj = milp_sdn_routing(res_bw, flows, edge_info, path_number, flow_require)
-            print 'the minimize maximize link utilization:', obj
-            return path_res, nPath
-        if mode == 'NSGA2':
-
+            chosen_path_info, obj = milp_sdn_routing(res_bw, flows, edge_info, path_number, flow_require)
+        elif mode == 'NSGA2':
+            nm = NetModel(res_bw, flows, edge_info, path_number, flow_require)
+            chosen_path_info, obj = nm.main()
+        print 'the minimize maximize link utilization:', obj
+        return chosen_path_info, nPath
 
 
     def path_to_link_vector(self, npath):
