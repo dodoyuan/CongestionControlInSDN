@@ -1,4 +1,6 @@
-# Common Setting for Networ awareness module.
+
+#  coding:utf8
+#  Common Setting for Network awareness module.
 
 from collections import defaultdict
 
