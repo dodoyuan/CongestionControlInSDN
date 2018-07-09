@@ -76,7 +76,7 @@ class T1Solution(Solution):
         while round:
             attr = self.attributes[:]
             attr[random.randint(0, self.flows_num-1)] = random.randint(0, self.path_num)
-            if netmodel.solution_is_validate(attr):
+            if self.net_model.solution_is_validate(attr):
                 self.attributes = attr
                 return
             round -= 1
