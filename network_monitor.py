@@ -218,7 +218,8 @@ class NetworkMonitor(app_manager.RyuApp):
                     if self.res_bw[(path[i], path[i+1])] < min_bw:
                         min_bw, edge = self.res_bw[(path[i], path[i+1])], (path[i], path[i+1])
                 elif (path[i+1], path[i]) in self.res_bw:
-                    self.res_bw[(path[i+1], path[i])] = max(self.res_bw[(path[i+1], path[i])] - require_bd, 0)
+                    # self.res_bw[(path[i+1], path[i])] = max(self.res_bw[(path[i+1], path[i])] - require_bd, 0)
+                    self.res_bw[(path[i + 1], path[i])] = self.res_bw[(path[i + 1], path[i])] - require_bd
                     if self.res_bw[(path[i+1], path[i])] < min_bw:
                         min_bw, edge = self.res_bw[(path[i+1], path[i])], (path[i+1], path[i])
             return min_bw, edge
