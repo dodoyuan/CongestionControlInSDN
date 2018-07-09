@@ -18,7 +18,7 @@ class T1Solution(Solution):
     Solution for the T1 function.
     '''
 
-    def __init__(self, flows_num, path_num):
+    def __init__(self, flows_num, path_num, net_model):
         '''
         Constructor.
         '''
@@ -26,8 +26,12 @@ class T1Solution(Solution):
         # 生成的初始解,为每条数据流随机选择一条路径
         self.flows_num = flows_num
         self.path_num = path_num
+        self.net_model = net_model
         self.attributes = self.generate_new_solution()
         self.evaluate_solution()
+
+
+
 
     def generate_new_solution(self):
         '''
@@ -38,26 +42,27 @@ class T1Solution(Solution):
             temp_solution = []
             for _ in range(self.flows_num):
                 temp_solution.append(random.randint(0, self.path_num))
-            if netmodel.solution_is_validate(temp_solution):
+            # TODO: how to relax coupling with a elegant way
+            if self.net_model.solution_is_validate(temp_solution):
                 return temp_solution
 
     def evaluate_solution(self):
         '''
         Implementation of method evaluate_solution() for T1 function.
         '''
-        self.objectives[0] = netmodel.objective_function1(self.attributes)
-        self.objectives[1] = netmodel.objective_function2(self.attributes)
+        self.objectives[0] = self.net_model.objective_function1(self.attributes)
+        self.objectives[1] = self.net_model.objective_function2(self.attributes)
 
     def crossover(self, other):
         '''
         Crossover of T1 solutions.
         '''
-        child_solution = T1Solution(self.flows_num, self.path_num)
+        child_solution = T1Solution(self.flows_num, self.path_num, self.net_model)
         # for i in range(30):
         #     child_solution.attributes[i] = math.sqrt(self.attributes[i] * other.attributes[i])
         point = random.randint(0, self.flows_num - 1)
         attributes = self.attributes[:point] + other.attributes[point:]
-        if netmodel.solution_is_validate(attributes):
+        if self.net_model.solution_is_validate(attributes):
             child_solution.attributes = attributes
         else:
             child_solution.attributes = self.generate_new_solution()
@@ -171,7 +176,7 @@ class NetModel:
         P = []
         # 初始化种群数量
         for i in range(70):
-            P.append(T1Solution(self.flow_num, self.path_number))
+            P.append(T1Solution(self.flow_num, self.path_number, self))
 
         # 迭代次数 30，种群大小 70
         nsga2.run(P, 70, 30)
