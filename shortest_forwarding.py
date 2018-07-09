@@ -99,7 +99,7 @@ class ShortestForwarding(app_manager.RyuApp):
         # if flag is 1,denote there must be congestion
         # self.logger.debug("config_flag:%s handle-flag %s" % (self.config_flag, self.handle_flag))
         if self.handle_flag:
-            self.logger.debug("enter reconfigration")
+            self.logger.info("enter reconfigration")
             # print information
             print 'before %s model' % mode
             self.monitor.res_bw_show()
@@ -434,7 +434,7 @@ class ShortestForwarding(app_manager.RyuApp):
             chose_flow = self.get_interfere_flow()  # get the flow route on congestion path
             if chose_flow != {}:
                 print 'chosen flow:', chose_flow
-                self.monitor.residual_bandwidth(chose_flow.values())  # renew the network res_bw graph
+                self.monitor.residual_bandwidth(chose_flow.values())  # renew/update the network res_bw graph
                 mode = 'NSGA2'
                 self._ilp_process(chose_flow, mode)
             else:
@@ -522,6 +522,7 @@ class ShortestForwarding(app_manager.RyuApp):
         '''
             chosen_flow --->  chose_flow[(ipsrc, ipdst)] = [(src_dp,dst_dp)， path, require_band]
             prepare the information for ILP model
+            we design two algorithm to achieve our purpose.
         '''
         flow_require = {}
         for flow, value in chosen_flow.items():
