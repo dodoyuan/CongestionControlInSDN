@@ -255,7 +255,7 @@ if __name__ == '__main__':
     #              ('10.0.0.3', '10.0.0.7'): {0: 1, 1: 0, 2: 0}, ('10.0.0.4', '10.0.0.8'): {0: 1, 1: 0, 2: 0}},
     #
     # }
-    
+
     netmodel = NetModel(res_bw, flows, edge_info, path_num, flow_require)
 
     print(netmodel.main())

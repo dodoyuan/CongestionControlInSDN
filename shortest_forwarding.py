@@ -99,9 +99,7 @@ class ShortestForwarding(app_manager.RyuApp):
         # if flag is 1,denote there must be congestion
         # self.logger.debug("config_flag:%s handle-flag %s" % (self.config_flag, self.handle_flag))
         if self.handle_flag:
-            self.logger.info("enter reconfigration")
-            # print information
-            print 'before %s model' % mode
+            self.logger.info("enter re-configration, process with mode: %s", mode)
             self.monitor.res_bw_show()
             self.handle_flag = 0  # avoid handle repeat request
             self.congstion = 0
@@ -124,7 +122,7 @@ class ShortestForwarding(app_manager.RyuApp):
                                   flow_info, None, prio=self.config_priority)
 
             # print information
-            print 'after  %s model' % mode
+            self.logger.info("process finished")
             self.monitor.res_bw_show()
 
     def add_drop_flow(self, flow_info, prio):
@@ -430,16 +428,15 @@ class ShortestForwarding(app_manager.RyuApp):
                                   flow_info, msg.buffer_id, msg.data, 1)
 
         if self.congstion:
+            self.logger.info("congestion happen")
             # if congestion,get the flow to reroute
             chose_flow = self.get_interfere_flow()  # get the flow route on congestion path
             if chose_flow != {}:
-                print 'chosen flow:', chose_flow
+                self.logger.info('chosen flow:', chose_flow)
                 self.monitor.residual_bandwidth(chose_flow.values())  # renew/update the network res_bw graph
-                mode = 'NSGA2'
-                self._ilp_process(chose_flow, mode)
+                self._ilp_process(chose_flow, setting.mode)
             else:
-                print 'no chosen flow'
-
+                self.logger.info('congestion happend but no flow is chosen')
         return
 
     def get_interfere_flow(self):
@@ -517,7 +514,6 @@ class ShortestForwarding(app_manager.RyuApp):
                 self.count -= 1
                 self.show_ilp_data()
 
-
     def routing_alogrithm(self, chosen_flow, mode = 'MILP'):
         '''
             chosen_flow --->  chose_flow[(ipsrc, ipdst)] = [(src_dp,dst_dp)， path, require_band]
@@ -546,17 +542,17 @@ class ShortestForwarding(app_manager.RyuApp):
                 if len(nPath) > path_number:
                     nPath[flow].pop()
         edge_info = self.path_to_link_vector(nPath)
-        print 'edge_info:', edge_info
+        self.logger.info('edge_info: %s', str(edge_info))
         flows = nPath.keys()
-        print 'candidate flows:', flows
+        self.logger.info('candidate flows: %s', str(flows))
         if mode == 'MILP':
             flows, flow_require = max_admittable_flow(res_bw, flows, edge_info, path_number, flow_require)
-            print 'admittable flow:', flow_require
+            self.logger.info('admittable flow: %s', str(flow_require))
             chosen_path_info, obj = milp_sdn_routing(res_bw, flows, edge_info, path_number, flow_require)
         elif mode == 'NSGA2':
             nm = NetModel(res_bw, flows, edge_info, path_number, flow_require)
             chosen_path_info, obj = nm.main()
-        print 'the minimize maximize link utilization:', obj
+        self.logger.info('the minimize maximize link utilization: %s', str(obj))
         return chosen_path_info, nPath
 
 

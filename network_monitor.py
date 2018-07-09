@@ -60,7 +60,6 @@ class NetworkMonitor(app_manager.RyuApp):
         self.res_bw = {}
         self.one_shot = True
 
-
     @set_ev_cls(ofp_event.EventOFPStateChange,
                 [MAIN_DISPATCHER, DEAD_DISPATCHER])
     def _state_change_handler(self, ev):
