@@ -1,3 +1,6 @@
+# /usr/bin python
+# -*- coding:utf8 -*-
+
 # Copyright (C) 2016 Li Cheng at Beijing University of Posts
 # and Telecommunications. www.muzixing.com
 #
@@ -202,13 +205,16 @@ class NetworkMonitor(app_manager.RyuApp):
            given a path and required bandwidth, update the allocated bandwidth.
            :return the minimal bandwidth of links
            update bandwidth with minus require_bd
+           剩余带宽计算问题
         '''
         _len, edge = len(path), None
         min_bw = setting.MAX_CAPACITY
         if _len > 1:
             for i in xrange(_len - 1):
                 if (path[i], path[i+1]) in self.res_bw:
-                    self.res_bw[(path[i], path[i+1])] = max(self.res_bw[(path[i], path[i+1])] - require_bd, 0)
+                    # 不显示负数， 但是会造成小问题： 两条数据流 2M
+                    # self.res_bw[(path[i], path[i+1])] = max(self.res_bw[(path[i], path[i+1])] - require_bd, 0)
+                    self.res_bw[(path[i], path[i + 1])] = self.res_bw[(path[i], path[i + 1])] - require_bd
                     if self.res_bw[(path[i], path[i+1])] < min_bw:
                         min_bw, edge = self.res_bw[(path[i], path[i+1])], (path[i], path[i+1])
                 elif (path[i+1], path[i]) in self.res_bw:
@@ -218,7 +224,6 @@ class NetworkMonitor(app_manager.RyuApp):
             return min_bw, edge
         else:
             return setting.MAX_CAPACITY, edge
-
 
     def dectect_congest_link(self,path):
         '''

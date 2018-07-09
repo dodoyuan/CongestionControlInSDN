@@ -106,8 +106,8 @@ class ShortestForwarding(app_manager.RyuApp):
 
             # allpath, flow_identity, max_priority = self.reconfigration()
             chosen_path, flow_paths = self.routing_alogrithm(chosen_flow, mode)
-            print 'chosen path:', chosen_path
-            print 'flow path:', flow_paths
+            self.logger.info('chosen path: %s', str(chosen_path))
+            self.logger.info('flow path: %s', str(flow_paths))
             self.config_priority += 1
             for flow, value in chosen_path.items():
                 flow_info = self.lookup[flow]
