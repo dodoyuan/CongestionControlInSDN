@@ -419,6 +419,7 @@ class ShortestForwarding(app_manager.RyuApp):
                     self.flow_path[(ip_src, ip_dst)].extend([path, require_band])
                     self.logger.info("[PATH]%s<-->%s: %s" % (ip_src, ip_dst, path))
                     # update residual bandwidth here and return network status
+                    # ATTENTION: easy cause repeated calculation
                     self.congstion = self.monitor.update_res_bw_and_congestion_detect(path, require_band)
                 flow_info = (eth_type, ip_src, ip_dst, in_port)
                 # install flow entries to datapath along side the path.
@@ -432,7 +433,7 @@ class ShortestForwarding(app_manager.RyuApp):
             # if congestion,get the flow to reroute
             chose_flow = self.get_interfere_flow()  # get the flow route on congestion path
             if chose_flow != {}:
-                self.logger.info('chosen flow:', chose_flow)
+                self.logger.info('chosen flow: %s', str(chose_flow))
                 self.monitor.residual_bandwidth(chose_flow.values())  # renew/update the network res_bw graph
                 self._ilp_process(chose_flow, setting.mode)
             else:

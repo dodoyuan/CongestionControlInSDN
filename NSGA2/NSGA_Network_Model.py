@@ -18,25 +18,26 @@ class T1Solution(Solution):
     Solution for the T1 function.
     '''
 
-    def __init__(self):
+    def __init__(self, flows_num, path_num):
         '''
         Constructor.
         '''
         Solution.__init__(self, 2)
         # 生成的初始解,为每条数据流随机选择一条路径
+        self.flows_num = flows_num
+        self.path_num = path_num
         self.attributes = self.generate_new_solution()
         self.evaluate_solution()
 
-    @staticmethod
-    def generate_new_solution():
+    def generate_new_solution(self):
         '''
         生成一个解空间，确保该解有效，即分配的流量不超过承载的带宽。
         TODO：如何有效生成一个解
         '''
         while True:
             temp_solution = []
-            for _ in range(flows_num):
-                temp_solution.append(random.randint(0, path_num))
+            for _ in range(self.flows_num):
+                temp_solution.append(random.randint(0, self.path_num))
             if netmodel.solution_is_validate(temp_solution):
                 return temp_solution
 
@@ -51,10 +52,10 @@ class T1Solution(Solution):
         '''
         Crossover of T1 solutions.
         '''
-        child_solution = T1Solution()
+        child_solution = T1Solution(self.flows_num, self.path_num)
         # for i in range(30):
         #     child_solution.attributes[i] = math.sqrt(self.attributes[i] * other.attributes[i])
-        point = random.randint(0, flows_num - 1)
+        point = random.randint(0, self.flows_num - 1)
         attributes = self.attributes[:point] + other.attributes[point:]
         if netmodel.solution_is_validate(attributes):
             child_solution.attributes = attributes
@@ -69,7 +70,7 @@ class T1Solution(Solution):
         round = 10
         while round:
             attr = self.attributes[:]
-            attr[random.randint(0, flows_num-1)] = random.randint(0, path_num)
+            attr[random.randint(0, self.flows_num-1)] = random.randint(0, self.path_num)
             if netmodel.solution_is_validate(attr):
                 self.attributes = attr
                 return
@@ -110,6 +111,7 @@ class NetModel:
         self.edge_info = edge_info
         self.path_number = path_number
         self.flow_require_dict = flow_require
+        self.flow_num = len(flows)
 
     def objective_function1(self, solution):
         '''
@@ -169,7 +171,7 @@ class NetModel:
         P = []
         # 初始化种群数量
         for i in range(70):
-            P.append(T1Solution())
+            P.append(T1Solution(self.flow_num, self.path_number))
 
         # 迭代次数 30，种群大小 70
         nsga2.run(P, 70, 30)
@@ -194,7 +196,7 @@ class NetModel:
         chosen_path_dict = {}
         for i, path_index in enumerate(chosen_path_info):
             if path_index:
-                chosen_path_dict[(flows[i])] = path_index - 1
+                chosen_path_dict[(self.flows[i])] = path_index - 1
         return chosen_path_dict, max_used_bandwidth
 
 
@@ -203,7 +205,6 @@ if __name__ == '__main__':
               (5, 7): 3, (6, 7): 3}
     flows = [('10.0.0.1', '10.0.0.4'), ('10.0.0.2', '10.0.0.5'), ('10.0.0.3', '10.0.0.6')]
     path_num = 3
-    flows_num = len(flows)
     flow_require = {('10.0.0.1', '10.0.0.4'): 2, ('10.0.0.2', '10.0.0.5'): 2, ('10.0.0.3', '10.0.0.6'): 2}
     edge_info = {
         (1, 2): {('10.0.0.1', '10.0.0.4'): {0: 1, 1: 0, 2: 0}, ('10.0.0.2', '10.0.0.5'): {0: 1, 1: 0, 2: 0},
@@ -223,6 +224,7 @@ if __name__ == '__main__':
         (6, 7): {('10.0.0.1', '10.0.0.4'): {0: 0, 1: 0, 2: 1}, ('10.0.0.2', '10.0.0.5'): {0: 0, 1: 0, 2: 1},
                  ('10.0.0.3', '10.0.0.6'): {0: 0, 1: 0, 2: 1}},
     }
+
     # res_bw = {(1, 2): 4.3, (2, 3): 2.9, (3, 4): 4.8, (4, 6): 3, (1, 5): 5.9, (5, 6): 7.5,
     #           (6, 7): 5.5, (1, 8): 3.1, (8, 9): 5.3, (9, 10): 4.1, (2, 5): 5}
     # flows = [('10.0.0.1', '10.0.0.5'), ('10.0.0.2', '10.0.0.6'), ('10.0.0.3', '10.0.0.7'),  ('10.0.0.4', '10.0.0.8')]
