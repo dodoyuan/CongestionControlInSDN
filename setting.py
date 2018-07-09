@@ -10,7 +10,8 @@ DELAY_DETECTING_PERIOD = 2  # For detecting link delay.
 
 TOSHOW = False  # For showing information in terminal
 
-MAX_CAPACITY = 10  # Max capacity of link
+# TODO：应该是一个矩阵
+MAX_CAPACITY = 3  # Max capacity of link
 
 path_number = 3
 
@@ -42,7 +43,7 @@ k_paths = 2
 WEIGHT = 'bw'
 
 # predefined requirement band-with of each source IP
-require_band = {"10.0.0.1": 2.1, "10.0.0.2": 0.6, "10.0.0.3": 1.4, "10.0.0.4": 3.3}
+require_band = {"10.0.0.1": 3, "10.0.0.2": 3, "10.0.0.3": 3, "10.0.0.4": 3}
 
 # predefined priority of each source IP
 priority_weight = {"10.0.0.1": 16, "10.0.0.2": 8, "10.0.0.3": 4}

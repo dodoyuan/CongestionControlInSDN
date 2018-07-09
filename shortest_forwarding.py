@@ -456,6 +456,8 @@ class ShortestForwarding(app_manager.RyuApp):
                 if (path[i], path[i+1]) == link or (path[i+1], path[i]) == link:
                     chose_flow[key] = value
                     bw += require_band
+                    # 取出链路多少合适，设置剩余带宽为容量的 40% 即可
+                    # TODO: 每条链路最大容量不一样如何处理
                     if bw > setting.MAX_CAPACITY * 0.4:  # reasonable value to set
                         return chose_flow
         return {}

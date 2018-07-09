@@ -186,7 +186,7 @@ class NetworkMonitor(app_manager.RyuApp):
         # update the residual bandwidth
         reconf_flag = 1
         min_bw, congstion_edge = self.update_res_bw(path, require_band)
-        print 'min_bw: %s congstion_edge: %s' % (min_bw, congstion_edge)
+        self.logger.info('min_bw: %s congstion_edge: %s', min_bw, congstion_edge)
         self.res_bw_show()
         # the link congestion threshold is 0.9
         if min_bw / setting.MAX_CAPACITY > 0.11:
@@ -194,7 +194,6 @@ class NetworkMonitor(app_manager.RyuApp):
         else:
             # function for detecting the congesting link
             # s1, s2 = self.dectect_congest_link(bw_guaranteed_paths)
-            print 'congestion hanppend'
             self.congest_link = [congstion_edge, min_bw]
         return reconf_flag
 
