@@ -25,6 +25,7 @@ prob_bandwidth = False
 # There have two choses: MILP & NSGA2 to handle network congestion
 mode = 'NSGA2'
 
+
 def get_link_capacity(dpid, port, return_matrix_flag):
     link_capacity = defaultdict(lambda: defaultdict(lambda: 10))
     # link_capacity[4][1] = 100
@@ -45,7 +46,7 @@ k_paths = 2
 WEIGHT = 'bw'
 
 # predefined requirement band-with of each source IP
-require_band = {"10.0.0.1": 3, "10.0.0.2": 3, "10.0.0.3": 3, "10.0.0.4": 3}
+require_band = {"10.0.0.1": 2, "10.0.0.2": 2, "10.0.0.3": 2, "10.0.0.4": 2}
 
 # predefined priority of each source IP
 priority_weight = {"10.0.0.1": 16, "10.0.0.2": 8, "10.0.0.3": 4}
