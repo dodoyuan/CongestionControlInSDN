@@ -121,7 +121,7 @@ class ShortestForwarding(app_manager.RyuApp):
                                   self.awareness.access_table, path,
                                   flow_info, None, prio=self.config_priority)
 
-            # print information
+            # print (information)
             self.logger.info("process finished")
             self.monitor.res_bw_show()
 
